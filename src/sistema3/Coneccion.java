@@ -1,4 +1,8 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package sistema3;
 
 import java.sql.Connection;
@@ -9,7 +13,12 @@ public class Coneccion {
 
     private Connection conexion;
 
-    public static void main(String[] args) {
+   public Coneccion() {
+        Coneccion obconeccion = new Coneccion();
+        obconeccion.Conectar();
+    }
+
+   public static void main(String[] args) {
         Coneccion obconeccion = new Coneccion();
         obconeccion.Conectar();
     }
@@ -22,7 +31,7 @@ public class Coneccion {
         this.conexion = conexion;
     }
 
-    public Coneccion Conectar() {
+    public Connection Conectar() {
         try {
             Class.forName("oracle.jdbc.OracleDriver");
             String BaseDeDatos = "jdbc:oracle:thin:@localhost:1521:XE";
@@ -36,7 +45,20 @@ public class Coneccion {
             System.out.println("error" + e);
         }
 
-        return this;
+        return conexion;
+    }
+    
+    public void close()
+    {
+        try {
+        
+             this.conexion.close();
+        } catch (Exception e)
+        {
+       // this.conexion.abort(executor);
+        }
+        
+       
     }
 
 }

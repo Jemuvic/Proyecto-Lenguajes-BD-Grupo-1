@@ -4,6 +4,8 @@ package sistema3;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
+//import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.*;
 
 
@@ -30,6 +32,9 @@ String duracion[]=new String[5];
 String codigo1="";
 
 
+Coneccion Oraclecon = new Coneccion();
+
+
  public Ejercicio3() {
 
         
@@ -44,7 +49,7 @@ public void ingresoEnTabla()
 {
     try
     {
-      conectar();
+     cn = Oraclecon.Conectar();
         String result="insert into SENDEROS values('"+codigo[contadorDeRegistros]+"','"
                     +nombre[contadorDeRegistros]
                     +"','"+direccion[contadorDeRegistros]+"','"+dificultad[contadorDeRegistros]
@@ -69,7 +74,7 @@ public void borrarTabla(int i)
 {
     try
     {
-    conectar();
+    cn = Oraclecon.Conectar();
     String res="DELETE FROM SENDEROS WHERE id_sen='"+codigo[i]+"'";
     s.executeUpdate(res);
 
@@ -87,7 +92,7 @@ public void actualizarTabla(int x)
     try
     {
        
-        conectar();
+        cn = Oraclecon.Conectar();
             String orden="UPDATE SENDEROS SET NOMBRE='"+nombre[x]+"' ,"
                     + "DIRECCION='"+direccion[x]+"', DIFICULTAD='"+dificultad[x]+"',CLIMA='"+clima[x]+"'"
                     + ", HORARIO='"+horario[x]+"', DURACION='"+duracion[x]+"' "
@@ -105,6 +110,8 @@ public void actualizarTabla(int x)
         JOptionPane.showMessageDialog(null,"No se puede Actualizar: "+ex);
     }
 }
+
+/*
 public void conectar()
 {
     try{
@@ -118,15 +125,20 @@ public void conectar()
        JOptionPane.showMessageDialog(null,"error: "+e);
     }
     
-}
+}*/
+
+
+
+
 
 public void consultaDeTabla()
 {
     int x=0;
     try {
             
-           conectar();
-           rs=s.executeQuery("SELECT count(*) FROM SENDEROS");
+           cn = Oraclecon.Conectar();
+           s = cn.prepareStatement("SELECT count(*) FROM SENDEROS");
+           rs = s.executeQuery("SELECT count(*) FROM SENDEROS");
           
            if(rs.next()){
             
@@ -201,10 +213,10 @@ public void eliminar(int x)
     }
     
 }
-//metodo de ingreso de datos
+//ingreso de datos
 public  void ingresoDeDatos(String id_sen,String Nombre, String Direccion
-                                    ,String dificultad,String clima, String horario,
-                                    String duracion) 
+                                    ,String Dificultad,String Clima, String Horario,
+                                    String Duracion) 
 {
   
     
@@ -233,7 +245,7 @@ public  void ingresoDeDatos(String id_sen,String Nombre, String Direccion
 }
 
 
-//metodo de modificacion de datos
+//modificar de datos
 public  void modificarDatos(String id_sen,String Nombre, String Direccion
                                     ,String Dificultad,String Clima,String Horario,
                                     String Duracion,int i)
@@ -252,7 +264,7 @@ public  void modificarDatos(String id_sen,String Nombre, String Direccion
 }
 
 
-//metodo para mostrar datos
+// mostrar datos
 public void mostrarDatos(int i)
 {          
             txtcod.setText(codigo[i]);
@@ -274,7 +286,7 @@ public void mostrarDatos(int i)
             txtcod.requestFocus();
 }
 
-//metodo para buscar el codigo en el arreglo
+//buscar el codigo
 public int buscarcodigo(String DPI) throws ArrayIndexOutOfBoundsException
 {   
     codigoencontrado=false;
@@ -292,7 +304,7 @@ public int buscarcodigo(String DPI) throws ArrayIndexOutOfBoundsException
     return regresar;
 }
 
-//metodo que mustra la info si ya existe
+//mostrar info si ya existe
 public void habilitarYMostrar(int i)
 {
     lblsenderos.setForeground(Color.WHITE);
@@ -319,7 +331,7 @@ public void habilitarYMostrar(int i)
             codigoencontrado=true;
 }
 
-//metodo para habilitar ingreso de datos
+// ingreso de datos
 public void habilitar()
 {
     lblsenderos.setForeground(Color.WHITE);
@@ -346,7 +358,7 @@ public void habilitar()
             codigoencontrado=false;
 }
 
-//metodo que deshabilita las casillas y muestra la info
+//deshabilitar las casillas y muestrar info
 public void deshabilitarYMostrar()
 {
     txtcod.setEnabled(true);
@@ -372,7 +384,7 @@ public void deshabilitarYMostrar()
             codigoencontrado=false;
 }
 
-//metodo que deshabilita las casillas de edicion
+//deshabilita las casillas de edicion
 public void deshabilitar()
 {
     txtcod.setEnabled(true);
@@ -391,7 +403,7 @@ public void deshabilitar()
             
 }
 
-//metodo que limpia las casillas
+//limpiar las casillas
 public void limpiar()
 {
             txtcod.setText("");
@@ -415,7 +427,7 @@ public void borrar()
         }
 }
 
-//metodo que permite solo numeros y guiones en el codigo
+//permitir solo numeros y guiones en el codigo
 public void errorDeFormato(String nombre)
 {
     JOptionPane.showMessageDialog(null, "No se permiten "+nombre+" en esta seccion.");
